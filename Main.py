@@ -128,14 +128,13 @@ def main():
 
     #게임 진행 화면
     if joystick.button_A.value == False:
-
-        my_image.paste(img_eggBreak, (0,0))
+        my_image.paste(img_eggBreak, (0,0), img_eggBreak)
         egg_image_list = [img_egg1, img_egg2, img_egg3, img_egg4, img_egg5, img_egg6]
 
         egg = Egg(joystick, my_image, egg_image_list)
         egg.start()
-        
 
+        
 
 
 if __name__ == '__main__':
