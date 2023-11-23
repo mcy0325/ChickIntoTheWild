@@ -1,4 +1,4 @@
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 import random
 import numpy as np
 import time
@@ -6,14 +6,14 @@ from colorsys import hsv_to_rgb
 from Joystick import Joystick
 from Egg import Egg
 from ImageLoader import ImageLoader
-from Character import Character
+
 
 def main():
 
     joystick = Joystick()
     image_loader = ImageLoader()
-    #character = Character()
-    
+
+
     my_image = Image.new("RGB", (joystick.width, joystick.height))
     my_draw = ImageDraw.Draw(my_image)
     joystick.disp.image(my_image)
@@ -23,6 +23,7 @@ def main():
         #게임 시작 화면 이미지 리스트
         start_image_list = [image_loader.get_image("gameStart"), image_loader.get_image("gameStory1"), image_loader.get_image("gameStory2")]
         image_index = 0
+
         
         #게임 시작 화면 이미지 출력
         while True:
@@ -46,42 +47,52 @@ def main():
             if joystick.button_B.value == False:
                 GameStart()
                 break
-            time.sleep(0.2)
+            #time.sleep(0.2)
     
     #게임 클리어 화면
     #def GameClear():
 
     GameStart()
+    game_stage = 0
 
-    #게임 진행 화면
-    if joystick.button_A.value == False:
-        my_image.paste(image_loader.get_image("eggBreak"), (0,0), image_loader.get_image("eggBreak"))
-        my_image.paste(image_loader.get_image("egg1"), (60,50), image_loader.get_image("egg1"))
-        joystick.disp.image(my_image)
-        time.sleep(0.2)
-        egg_image_list = [image_loader.get_image("egg2"), image_loader.get_image("egg3"), image_loader.get_image("egg4"), image_loader.get_image("egg5"), image_loader.get_image("egg6")]
-        egg = Egg(joystick, my_image, egg_image_list)
-        egg_success = egg.start()
+    while True:
 
-        if not egg_success:
-            GameOver()
-        
-        else:
-            my_image.paste(image_loader.get_image("growUp"), (0,0), image_loader.get_image("growUp"))
-            my_image.paste(image_loader.get_image("eggChick"), (60,70), image_loader.get_image("eggChick"))
-            joystick.disp.image(my_image)
-            time.sleep(0.2)
-    
-    if joystick.button_A.value == False:
-        my_image.paste(image_loader.get_image("howPlayS"), (0,0), image_loader.get_image("howPlayS"))
-        joystick.disp.image(my_image)
-        time.sleep(0.2)
+        if game_stage == 0:
+            if joystick.button_A.value == False:
+                my_image.paste(image_loader.get_image("eggBreak"), (0,0), image_loader.get_image("eggBreak"))
+                my_image.paste(image_loader.get_image("egg1"), (60,50), image_loader.get_image("egg1"))
+                joystick.disp.image(my_image)
+                time.sleep(0.2)
+                egg_image_list = [image_loader.get_image("egg2"), image_loader.get_image("egg3"), image_loader.get_image("egg4"), image_loader.get_image("egg5"), image_loader.get_image("egg6")]
+                egg = Egg(joystick, my_image, egg_image_list)
+                egg_success = egg.start()
 
-    if joystick.button_A == False:
-        my_image.paste(image_loader.get_image("spring"), (0,0), image_loader.get_image("spring"))
-        joystick.disp.image(my_image)
-        time.sleep(0.2)
+                if not egg_success:
+                    game_stage = 0
+                    GameOver()
+                
+                else:
+                    game_stage += 1
+                    my_image.paste(image_loader.get_image("growUp"), (0,0), image_loader.get_image("growUp"))
+                    my_image.paste(image_loader.get_image("eggChick"), (60,70), image_loader.get_image("eggChick"))
+                    joystick.disp.image(my_image)
+                    time.sleep(0.2)
 
+            
+
+        elif game_stage == 1:
+            if joystick.button_A.value == False:
+                my_image.paste(image_loader.get_image("howPlayS"), (0,0), image_loader.get_image("howPlayS"))
+                joystick.disp.image(my_image)
+                time.sleep(0.2)
+                game_stage += 1
+
+        elif game_stage == 2:
+            if joystick.button_A.value == False:
+                my_image.paste(image_loader.get_image("spring"), (0,0), image_loader.get_image("spring"))
+                joystick.disp.image(my_image)
+                time.sleep(0.2)
+                game_stage += 1
 
 if __name__ == '__main__':
     main()

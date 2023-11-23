@@ -1,6 +1,4 @@
 import time
-from PIL import Image
-from colorsys import hsv_to_rgb
 
 class Egg:
     def __init__(self, joystick, myImage, image_list):
@@ -18,10 +16,11 @@ class Egg:
         else:
             print("All images have been displayed.")
 
-
-    def check_button(self):
+    def check_button(self, start_time):
         a_pressed = False
         while True:
+            if time.time() - start_time > 10:  # 10초를 초과하면 루프 종료
+                return False
             if self.joystick.button_A.value == False:
                 a_pressed = True
                 time.sleep(0.2)
@@ -34,14 +33,9 @@ class Egg:
                 if self.button_count >= 25:  # button_count가 25 이상이면 True를 반환
                     return True
                 time.sleep(0.2)
-        return False
 
     def start(self):
         start_time = time.time()  # 시작 시간 저장
-        while True:
-            if time.time() - start_time > 10:  # 10초를 초과하면 종료
-                print("시간 초과!")
-                return False
-            if self.check_button():  # 버튼 확인, check_button이 True를 반환하면 True 반환
-                return True
+        return self.check_button(start_time)  # check_button 함수에 start_time을 인자로 전달합니다.
+
 

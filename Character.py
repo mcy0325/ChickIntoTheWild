@@ -24,14 +24,3 @@ def switch_images(self, images, mirror=False):
             x_coordinate += 10  # 이미지를 오른쪽으로 이동
             time.sleep(0.1)  # 이미지 전환 속도를 조절하는 데 사용
 
-class SpringMove:
-    joystick = Joystick()
-    image_loader = ImageLoader()
-
-    eggChick_move_list = [image_loader.get_image("eggChickMove1"), image_loader.get_image("eggChickMove2")]
-
-    while True:
-        if joystick.button_L.value == False:  # L 버튼이 눌렸을 때
-            switch_images(eggChick_move_list, mirror=True)
-        elif joystick.button_R.value == False:  # R 버튼이 눌렸을 때
-            switch_images(eggChick_move_list, mirror=False)
