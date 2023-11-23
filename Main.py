@@ -9,10 +9,10 @@ from ImageLoader import ImageLoader
 from Character import Character
 
 def main():
-    #Initialize Joystick
+
     joystick = Joystick()
     image_loader = ImageLoader()
-    character = Character()
+    #character = Character()
     
     my_image = Image.new("RGB", (joystick.width, joystick.height))
     my_draw = ImageDraw.Draw(my_image)
@@ -81,11 +81,6 @@ def main():
         my_image.paste(image_loader.get_image("spring"), (0,0), image_loader.get_image("spring"))
         joystick.disp.image(my_image)
         time.sleep(0.2)
-
-        
-
-
-
 
 
 if __name__ == '__main__':
