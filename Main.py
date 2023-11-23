@@ -6,11 +6,13 @@ from colorsys import hsv_to_rgb
 from Joystick import Joystick
 from Egg import Egg
 from ImageLoader import ImageLoader
+from Character import Character
 
 def main():
     #Initialize Joystick
     joystick = Joystick()
     image_loader = ImageLoader()
+    character = Character()
     
     my_image = Image.new("RGB", (joystick.width, joystick.height))
     my_draw = ImageDraw.Draw(my_image)
@@ -63,6 +65,27 @@ def main():
 
         if not egg_success:
             GameOver()
+        
+        else:
+            my_image.paste(image_loader.get_image("growUp"), (0,0), image_loader.get_image("growUp"))
+            my_image.paste(image_loader.get_image("eggChick"), (60,70), image_loader.get_image("eggChick"))
+            joystick.disp.image(my_image)
+            time.sleep(0.2)
+    
+    if joystick.button_A.value == False:
+        my_image.paste(image_loader.get_image("howPlayS"), (0,0), image_loader.get_image("howPlayS"))
+        joystick.disp.image(my_image)
+        time.sleep(0.2)
+
+    if joystick.button_A == False:
+        my_image.paste(image_loader.get_image("spring"), (0,0), image_loader.get_image("spring"))
+        joystick.disp.image(my_image)
+        time.sleep(0.2)
+
+        
+
+
+
 
 
 if __name__ == '__main__':
