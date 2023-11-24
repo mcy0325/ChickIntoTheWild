@@ -52,3 +52,11 @@ class Joystick:
         # Make sure to create image with mode 'RGB' for color.
         self.width = self.disp.width
         self.height = self.disp.height
+    
+    def get_commands(self):
+        return {
+            'up_pressed': not self.button_U.value,  # 버튼 U가 눌리면 위로
+            'down_pressed': not self.button_D.value,  # 버튼 D가 눌리면 아래로
+            'left_pressed': not self.button_L.value,  # 버튼 L이 눌리면 왼쪽으로
+            'right_pressed': not self.button_R.value,  # 버튼 R이 눌리면 오른쪽으로
+        }

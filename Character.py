@@ -1,26 +1,57 @@
+import numpy as np
 from PIL import ImageOps
-from ImageLoader import ImageLoader
+from PIL import Image
 import time
-from Joystick import Joystick
 
-def mirror_image(image):
-    return ImageOps.mirror(image)
+class Character:
+    def __init__(self, width, height, image1, image2, my_image, joystick, image_loader):
+        self.state = None
+        self.images = [image1, image2]
+        self.current_image = self.images[0]
+        self.my_image = my_image
+        self.joystick = joystick
+        self.image_loader = image_loader
+        image_width, image_height = self.current_image.size
+        self.position = [width / 2 - image_width / 2, height / 2 - image_height / 2, width / 2 + image_width / 2, height / 2 + image_height / 2]
+        self.last_updated = time.time()
+        self.flip = False
 
-def switch_images(self, images, mirror=False):
-    x_coordinate = 60  # 초기 x 좌표
-    while True:
-        if self.joystick.button_L.value == False and mirror:  # L 버튼이 눌리고 mirror가 True일 때
-            mirrored_image = mirror_image(images[self.image_index])
-            self.myImage.paste(mirrored_image, (x_coordinate, 50), mirrored_image)
-            self.joystick.disp.image(self.myImage)
-            self.image_index = (self.image_index + 1) % len(images)  # 다음 이미지로 인덱스를 변경
-            x_coordinate -= 10  # 이미지를 왼쪽으로 이동
-            time.sleep(0.1)  # 이미지 전환 속도를 조절하는 데 사용
+    def move(self, command=None):
+        if command['up_pressed'] or command['down_pressed'] or command['left_pressed'] or command['right_pressed']:
+            if command['up_pressed']:
+                self.position[1] = max(0, self.position[1] - 5)
+                self.position[3] = max(0, self.position[3] - 5)
+            if command['down_pressed']:
+                self.position[1] = min(self.my_image.size[1] - self.current_image.size[1], self.position[1] + 5)
+                self.position[3] = min(self.my_image.size[1], self.position[3] + 5)
+            if command['left_pressed']:
+                self.position[0] = max(0, self.position[0] - 5)
+                self.position[2] = max(0, self.position[2] - 5)
+                self.flip = True
+            if command['right_pressed']:
+                self.position[0] = min(self.my_image.size[0] - self.current_image.size[0], self.position[0] + 5)
+                self.position[2] = min(self.my_image.size[0], self.position[2] + 5)
+                self.flip = False
 
-        elif self.joystick.button_R.value == False and not mirror:  # R 버튼이 눌리고 mirror가 False일 때
-            self.myImage.paste(images[self.image_index], (x_coordinate, 50), images[self.image_index])
-            self.joystick.disp.image(self.myImage)
-            self.image_index = (self.image_index + 1) % len(images)  # 다음 이미지로 인덱스를 변경
-            x_coordinate += 10  # 이미지를 오른쪽으로 이동
-            time.sleep(0.1)  # 이미지 전환 속도를 조절하는 데 사용
+            if time.time() - self.last_updated > 0.1:  # 0.5초마다 이미지를 전환합니다.
+                if self.current_image == self.images[0]:
+                    self.current_image = self.images[1]
+                else:
+                    self.current_image = self.images[0]
+                self.last_updated = time.time()
 
+
+    def display(self):
+        self.my_image.paste(self.image_loader.get_image("spring"), (0,0))  # 배경 이미지를 다시 그림
+        position = [int(p) for p in self.position]  # position의 각 요소를 정수로 변환
+
+        if self.flip:
+            current_image = ImageOps.mirror(self.current_image)
+        else:
+            current_image = self.current_image
+
+        self.my_image.paste(current_image, tuple(position), current_image)
+        self.joystick.disp.image(self.my_image)
+    
+    def get_position(self):
+        return self.position
