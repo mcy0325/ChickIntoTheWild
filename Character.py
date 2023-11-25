@@ -42,7 +42,6 @@ class Character:
 
 
     def display(self):
-        self.my_image.paste(self.image_loader.get_image("spring"), (0,0))  # 배경 이미지를 다시 그림
         position = [int(p) for p in self.position]  # position의 각 요소를 정수로 변환
 
         if self.flip:
@@ -54,4 +53,8 @@ class Character:
         self.joystick.disp.image(self.my_image)
     
     def get_position(self):
-        return self.position
+        x1, y1, x2, y2 = self.position
+        center_x = (x1 + x2) / 2
+        center_y = (y1 + y2) / 2
+        return center_x, center_y
+
