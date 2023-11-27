@@ -20,13 +20,13 @@ class Character:
         if command['up_pressed'] or command['down_pressed'] or command['left_pressed'] or command['right_pressed']:
             if command['up_pressed']:
                 self.position[1] = max(0, self.position[1] - 5)
-                self.position[3] = max(0, self.position[3] - 5)
+                self.position[3] = max(self.position[1] + self.current_image.size[1], self.position[3] - 5)
             if command['down_pressed']:
                 self.position[1] = min(self.my_image.size[1] - self.current_image.size[1], self.position[1] + 5)
                 self.position[3] = min(self.my_image.size[1], self.position[3] + 5)
             if command['left_pressed']:
                 self.position[0] = max(0, self.position[0] - 5)
-                self.position[2] = max(0, self.position[2] - 5)
+                self.position[2] = max(self.position[0] + self.current_image.size[0], self.position[2] - 5)
                 self.flip = True
             if command['right_pressed']:
                 self.position[0] = min(self.my_image.size[0] - self.current_image.size[0], self.position[0] + 5)
@@ -42,7 +42,6 @@ class Character:
 
 
     def display(self):
-        self.my_image.paste(self.image_loader.get_image("spring"), (0,0))  # 배경 이미지를 다시 그림
         position = [int(p) for p in self.position]  # position의 각 요소를 정수로 변환
 
         if self.flip:
@@ -50,8 +49,16 @@ class Character:
         else:
             current_image = self.current_image
 
+        # resize the current_image to match the position size
+        current_image = current_image.resize((position[2] - position[0], position[3] - position[1]))
+
         self.my_image.paste(current_image, tuple(position), current_image)
         self.joystick.disp.image(self.my_image)
+
     
     def get_position(self):
-        return self.position
+        x1, y1, x2, y2 = self.position
+        center_x = (x1 + x2) / 2
+        center_y = (y1 + y2) / 2
+        return center_x, center_y
+

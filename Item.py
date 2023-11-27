@@ -1,5 +1,4 @@
 import random
-from PIL import Image
 
 class Item:
     def __init__(self, my_image, width, height, item_image):
@@ -10,5 +9,7 @@ class Item:
 
     def display(self):
         position = [int(p) for p in self.position]  # position의 각 요소를 정수로 변환
-        mask = Image.new('L', self.image.size, color=255)  # 아이템 이미지와 같은 크기의 새 마스크 생성
-        self.my_image.paste(self.image, tuple(position), self.image)  # 마스크 사용
+        self.my_image.paste(self.image, tuple(position), self.image)
+
+    def get_position(self):
+        return self.position
