@@ -17,7 +17,7 @@ class Enemy:
                 self.direction = random.choice(['down', 'left', 'right'])
         elif self.direction == 'down':
             self.y += self.speed
-            if self.y >= 200:
+            if self.y >= 190:
                 self.direction = random.choice(['up', 'left', 'right'])
         elif self.direction == 'left':
             self.x -= self.speed
@@ -25,7 +25,7 @@ class Enemy:
                 self.direction = random.choice(['up', 'down', 'right'])
         elif self.direction == 'right':
             self.x += self.speed
-            if self.x >= 200:
+            if self.x >= 190:
                 self.direction = random.choice(['up', 'down', 'left'])
 
     def draw(self, my_image):
