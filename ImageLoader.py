@@ -38,9 +38,8 @@ class ImageLoader:
         img_egg6 = Image.open('./images/egg6.PNG', mode='r').convert('RGBA')
 
         #Open Item Images
-        img_apple = Image.open('./images/apple.PNG', mode='r').convert('RGBA')
         img_bud = Image.open('./images/bud.PNG', mode='r').convert('RGBA')
-        img_flag = Image.open('./images/flag.PNG', mode='r').convert('RGBA')
+        img_cherry = Image.open('./images/cherry.PNG', mode='r').convert('RGBA')
         img_ice = Image.open('./images/ice.PNG', mode='r').convert('RGBA')
         img_waterDrop = Image.open('./images/waterDrop.PNG', mode='r').convert('RGBA')
 
@@ -89,9 +88,8 @@ class ImageLoader:
             "egg4": img_egg4,
             "egg5": img_egg5,
             "egg6": img_egg6,
-            "apple": img_apple,
+            "cherry": img_cherry,
             "bud": img_bud,
-            "flag": img_flag,
             "ice": img_ice,
             "waterDrop": img_waterDrop,
             "butterfly": img_butterfly,

@@ -1,5 +1,4 @@
 import random
-from Joystick import Joystick
 
 class Enemy:
     def __init__(self, x, y, speed, image, image_loader):

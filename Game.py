@@ -1,29 +1,35 @@
 import time
-import random
 from Egg import Egg
-from Character import Character
-from Enemy import Enemy
-from Item import Item
+from PIL import ImageDraw, ImageFont
+from Stage import stage_process
 
 class Game:
-    def __init__(self, joystick, image_loader, my_image):
+    def __init__(self, joystick, image_loader):
         self.joystick = joystick
         self.image_loader = image_loader
-        self.my_image = my_image
-        self.stage = 0
+        self.stage = 5
         self.spring_score = 0
-        self.lives = 3
+        self.summer_score = 0
+        self.fall_score = 0
+        self.winter_score = 0
+        self.total_score = 0
+        self.lives = 3   
 
-    def start(self):
+    def start(self, my_image):
+        self.my_image = my_image
         while True:
             if self.stage == 0:
                 self.start_stage()
-                print(self.stage)
-                print(self.lives)
             elif self.stage == 1:
                 self.egg_break_stage()
             elif self.stage == 2:
                 self.spring_stage()
+            elif self.stage == 3:
+                self.summer_stage()
+            elif self.stage == 4:
+                self.fall_stage()
+            elif self.stage == 5:
+                self.winter_stage()
             else:
                 break
     
@@ -36,7 +42,27 @@ class Game:
                 self.stage = 0
                 self.lives = 3
                 self.spring_score = 0
-                self.start()
+                self.summer_score = 0
+                self.fall_score = 0
+                self.winter_score = 0
+                self.total_score = 0
+                self.start(self.my_image)
+                break
+    
+    def game_end(self):
+        self.my_image.paste(self.image_loader.get_image("gameEnd"), (0,0), self.image_loader.get_image("gameEnd"))
+        self.joystick.disp.image(self.my_image)
+
+        while True:
+            if self.joystick.button_B.value == False:
+                self.stage = 0
+                self.lives = 3
+                self.spring_score = 0
+                self.summer_score = 0
+                self.fall_score = 0
+                self.winter_score = 0
+                self.total_score = 0
+                self.start(self.my_image)
                 break
     
     def start_stage(self):
@@ -72,105 +98,60 @@ class Game:
             time.sleep(0.2)
             self.stage += 1
 
-
     def spring_stage(self):
-        # 캐릭터 생성
-        character = Character(240, 240, self.image_loader.get_image("eggChickMove1"), self.image_loader.get_image("eggChickMove2"), self.my_image, self.joystick, self.image_loader)
-        # 아이템, 적의 위치 초기화
-        item_positions = [[random.randint(20, 210), random.randint(20, 190)] for _ in range(10)]
-        enemy_positions = [[random.randint(20, 210), random.randint(20, 190)] for _ in range(5)]
-
-        # 아이템 생성
-        item_image = self.image_loader.get_image("bud")
-        items = [Item(self.my_image, self.joystick.width, self.joystick.height, item_image) for _ in range(10)]
-        # 적 생성
-        enemies = [Enemy(random.randint(20, 190), random.randint(20, 190), 5, "butterfly", self.image_loader) for _ in range(5)]
-        # 타이머 설정
-        start_time = time.time()
-        
-        # 게임 루프
-        while True:
-            if time.time() - start_time > 60:
-                self.game_over()
-                return
-            
-
-            # 캐릭터의 움직임 업데이트
-            command = self.joystick.get_commands()  # 조이스틱의 입력을 받아옵니다. 이 부분은 조이스틱 라이브러리에 따라 다를 수 있습니다.
-            character.move(command)
-            character.display()
-
-            self.my_image.paste(self.image_loader.get_image("spring"), (0,0), self.image_loader.get_image("spring")) 
-
-            # 아이템과 적의 위치 업데이트
-            item_positions, enemy_positions = self.update_positions(item_positions, enemy_positions)
-
-            # 아이템 출력
-            for item in items:
-                item.display()
-
-            # 적의 움직임 업데이트 및 화면에 그리기
-            for enemy in enemies:
-                enemy.update()
-                enemy.draw(self.my_image)
-
-                
-            # 캐릭터와 아이템의 충돌 확인
-            for item in items[:]:
-                item_position = item.get_position()
-                character_position = character.get_position()
-                if self.collide(character_position, item_position):
-                    items.remove(item)
-                    print("Item removed: ", item_position)
-                    if len(items) >= 4:
-                        self.spring_score += 10
-                        print(self.spring_score)
-
-            # 캐릭터와 적의 충돌 확인
-            for enemy in enemies[:]:
-                enemy_position = enemy.get_position()
-                character_position = character.get_position()
-                if self.collide(character_position, enemy_position):
-                    enemies.remove(enemy)
-                    self.lives -= 1
-                    print("Enemy collided! Lives:", self.lives)
-
-            # 생명이 0개가 되었는지 확인
-            if self.lives == 0:
-                self.game_over()  # 게임 오버 처리
-                return  # 게임 루프 종료
-
-            if time.time() - start_time > 60 and len(item_positions) <= 7:
-                self.my_image.paste(self.image_loader.get_image("growUp"), (0,0))
-                self.joystick.disp.image(self.my_image)
-                self.stage += 1
-                return
-             
+        result, score, lives = stage_process(self.my_image, self.joystick, self.image_loader, self.lives, "eggChickMove1", "eggChickMove2", "bud", 4, "butterfly", 60, "growUp", "chick", "spring", 10)
+        if not result:
+            self.game_over()
+        else:
+            self.spring_score = score
+            self.total_score += self.spring_score
+            self.lives = lives
+            print(self.spring_score)
+            print(self.total_score)
+            self.stage += 1
     
-    def update_positions(self, item_positions, enemy_positions):
-        # 아이템의 위치 업데이트
-        for i in range(len(item_positions)):
-            # 아이템이 화면 밖으로 나가지 않도록 제한
-            item_positions[i][0] = max(0, min(item_positions[i][0], 190))
-            item_positions[i][1] = max(0, min(item_positions[i][1], 190))
+    def summer_stage(self):
+        result, score, lives = stage_process(self.my_image, self.joystick, self.image_loader, self.lives, "chickMove1", "chickMove2", "waterDrop", 6, "cloud", 50, "growUp", "rooster", "summer", 20)
+        if not result:
+            self.game_over()
+        else:
+            self.summer_score = score
+            self.total_score += self.summer_score
+            self.lives = lives
+            print(self.summer_score)
+            print(self.total_score)
+            self.stage += 1
 
-        # 적의 위치 업데이트
-        for i in range(len(enemy_positions)):
-            dx = random.randint(-5, 5)  # X 좌표를 -5부터 5까지 무작위로 이동
-            dy = random.randint(-5, 5)  # Y 좌표를 -5부터 5까지 무작위로 이동
+    def fall_stage(self):
+        result, score, lives = stage_process(self.my_image, self.joystick, self.image_loader, self.lives, "roosterMove1", "roosterMove2", "cherry", 8, "worm", 40, "growUp", "goodRooster", "fall", 30)
+        if not result:
+            self.game_over()
+        else:
+            self.fall_score = score
+            self.total_score += self.fall_score
+            self.lives = lives
+            print(self.fall_score)
+            print(self.total_score)
+            self.stage += 1
 
-            # 이동 후의 위치가 화면을 벗어나는지 확인
-            if 20 <= enemy_positions[i][0] + dx <= 190:
-                enemy_positions[i][0] += dx
-            if 20 <= enemy_positions[i][1] + dy <= 190:
-                enemy_positions[i][1] += dy
-
-        return item_positions, enemy_positions
-
-    def collide(self, pos1, pos2):
-        x1, y1 = pos1
-        x2, y2 = pos2
-
-        distance = ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5  # 두 위치 사이의 거리를 계산합니다.
-
-        return distance < 16  # 거리가 10 이하면 충돌했다고 판단합니다.
+    def winter_stage(self):
+        result, score, lives = stage_process(self.my_image, self.joystick, self.image_loader, self.lives, "goodRoosterMove1", "goodRoosterMove2", "ice", 10, "sharp", 30, "growUp", "greatRooster", "winter", 40)
+        if not result:
+            self.game_over()
+        else:
+            self.winter_score = score
+            self.total_score += self.winter_score
+            self.lives = lives
+            print(self.winter_score)
+            print(self.total_score)
+            self.my_image.paste(self.image_loader.get_image("totalScore"), (0,0), self.image_loader.get_image("totalScore"))
+            fnt = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 20)
+            my_draw = ImageDraw.Draw(self.my_image)
+            my_draw.text((105, 60), str(self.spring_score), font=fnt, fill=(0, 0, 0))
+            my_draw.text((121, 95), str(self.summer_score), font=fnt, fill=(0, 0, 0))
+            my_draw.text((80, 127), str(self.fall_score), font=fnt, fill=(0, 0, 0))
+            my_draw.text((105, 162), str(self.winter_score), font=fnt, fill=(0, 0, 0))
+            my_draw.text((98, 202), str(self.total_score), font=fnt, fill=(0, 0, 0))
+            self.joystick.disp.image(self.my_image)
+            time.sleep(5)
+            self.game_end()

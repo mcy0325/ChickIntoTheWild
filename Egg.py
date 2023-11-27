@@ -19,7 +19,7 @@ class Egg:
     def check_button(self, start_time):
         a_pressed = False
         while True:
-            if time.time() - start_time > 30:  # 15초를 초과하면 루프 종료
+            if time.time() - start_time > 30:  # 여기 숫자 수정해야함
                 return False
             if self.joystick.button_A.value == False:
                 a_pressed = True
@@ -30,7 +30,7 @@ class Egg:
                 if self.button_count % 5 == 0:
                     self.image_index += 1
                     self.update_image()
-                if self.button_count >= 1:  # button_count가 25 이상이면 True를 반환
+                if self.button_count >= 1:  # 여기 숫자 수정해야함
                     return True
                 time.sleep(0.2)
 

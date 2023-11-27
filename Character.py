@@ -1,7 +1,5 @@
-import numpy as np
-from PIL import ImageOps
-from PIL import Image
 import time
+from PIL import ImageOps
 
 class Character:
     def __init__(self, width, height, image1, image2, my_image, joystick, image_loader):
@@ -33,7 +31,7 @@ class Character:
                 self.position[2] = min(self.my_image.size[0], self.position[2] + 5)
                 self.flip = False
 
-            if time.time() - self.last_updated > 0.1:  # 0.5초마다 이미지를 전환합니다.
+            if time.time() - self.last_updated > 0.1:  # 0.1초마다 이미지를 전환합니다.
                 if self.current_image == self.images[0]:
                     self.current_image = self.images[1]
                 else:
@@ -42,14 +40,13 @@ class Character:
 
 
     def display(self):
-        position = [int(p) for p in self.position]  # position의 각 요소를 정수로 변환
+        position = [int(p) for p in self.position]
 
         if self.flip:
             current_image = ImageOps.mirror(self.current_image)
         else:
             current_image = self.current_image
 
-        # resize the current_image to match the position size
         current_image = current_image.resize((position[2] - position[0], position[3] - position[1]))
 
         self.my_image.paste(current_image, tuple(position), current_image)

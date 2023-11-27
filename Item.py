@@ -8,7 +8,7 @@ class Item:
         self.position = [random.randint(0, width - image_width), random.randint(0, height - image_height)]
 
     def display(self):
-        position = [int(p) for p in self.position]  # position의 각 요소를 정수로 변환
+        position = [int(p) for p in self.position] 
         self.my_image.paste(self.image, tuple(position), self.image)
 
     def get_position(self):
