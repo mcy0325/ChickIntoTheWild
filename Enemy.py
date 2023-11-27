@@ -13,22 +13,23 @@ class Enemy:
     def update(self):
         if self.direction == 'up':
             self.y -= self.speed
-            if self.y <= 0:
+            if self.y <= 20:
                 self.direction = random.choice(['down', 'left', 'right'])
         elif self.direction == 'down':
             self.y += self.speed
-            if self.y >= 240:
+            if self.y >= 200:
                 self.direction = random.choice(['up', 'left', 'right'])
         elif self.direction == 'left':
             self.x -= self.speed
-            if self.x <= 0:
+            if self.x <= 20:
                 self.direction = random.choice(['up', 'down', 'right'])
         elif self.direction == 'right':
             self.x += self.speed
-            if self.x >= 240:
+            if self.x >= 200:
                 self.direction = random.choice(['up', 'down', 'left'])
 
     def draw(self, my_image):
         my_image.paste(self.image_loader.get_image(self.image), (self.x, self.y), self.image_loader.get_image(self.image))
         
-
+    def get_position(self):
+        return self.x, self.y
