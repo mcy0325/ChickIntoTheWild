@@ -7,7 +7,7 @@ class Game:
     def __init__(self, joystick, image_loader):
         self.joystick = joystick
         self.image_loader = image_loader
-        self.stage = 5
+        self.stage = 0
         self.spring_score = 0
         self.summer_score = 0
         self.fall_score = 0
@@ -85,7 +85,7 @@ class Game:
         self.joystick.disp.image(self.my_image)
         time.sleep(0.2)
         egg_image_list = [self.image_loader.get_image("egg2"), self.image_loader.get_image("egg3"), self.image_loader.get_image("egg4"), self.image_loader.get_image("egg5"), self.image_loader.get_image("egg6")]
-        egg = Egg(self.joystick, self.my_image, egg_image_list)
+        egg = Egg(self.joystick, self.my_image, egg_image_list, self.image_loader)
         egg_success = egg.start()
 
         if not egg_success:
@@ -95,11 +95,11 @@ class Game:
             self.my_image.paste(self.image_loader.get_image("growUp"), (0,0), self.image_loader.get_image("growUp"))
             self.my_image.paste(self.image_loader.get_image("eggChick"), (60,70), self.image_loader.get_image("eggChick"))
             self.joystick.disp.image(self.my_image)
-            time.sleep(0.2)
+            time.sleep(3)
             self.stage += 1
 
     def spring_stage(self):
-        result, score, lives = stage_process(self.my_image, self.joystick, self.image_loader, self.lives, "eggChickMove1", "eggChickMove2", "bud", 4, "butterfly", 60, "growUp", "chick", "spring", 10)
+        result, score, lives = stage_process(self.my_image, self.joystick, self.image_loader, self.lives, "eggChickMove1", "eggChickMove2", "bud", 4, "butterfly", 40, "growUp", "chick", "spring", 10)
         if not result:
             self.game_over()
         else:
@@ -111,7 +111,7 @@ class Game:
             self.stage += 1
     
     def summer_stage(self):
-        result, score, lives = stage_process(self.my_image, self.joystick, self.image_loader, self.lives, "chickMove1", "chickMove2", "waterDrop", 6, "cloud", 50, "growUp", "rooster", "summer", 20)
+        result, score, lives = stage_process(self.my_image, self.joystick, self.image_loader, self.lives, "chickMove1", "chickMove2", "waterDrop", 6, "cloud", 40, "growUp", "rooster", "summer", 20)
         if not result:
             self.game_over()
         else:
@@ -123,7 +123,7 @@ class Game:
             self.stage += 1
 
     def fall_stage(self):
-        result, score, lives = stage_process(self.my_image, self.joystick, self.image_loader, self.lives, "roosterMove1", "roosterMove2", "cherry", 8, "worm", 40, "growUp", "goodRooster", "fall", 30)
+        result, score, lives = stage_process(self.my_image, self.joystick, self.image_loader, self.lives, "roosterMove1", "roosterMove2", "cherry", 8, "worm", 30, "growUp", "goodRooster", "fall", 30)
         if not result:
             self.game_over()
         else:
