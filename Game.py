@@ -85,7 +85,7 @@ class Game:
         self.joystick.disp.image(self.my_image)
         time.sleep(0.2)
         egg_image_list = [self.image_loader.get_image("egg2"), self.image_loader.get_image("egg3"), self.image_loader.get_image("egg4"), self.image_loader.get_image("egg5"), self.image_loader.get_image("egg6")]
-        egg = Egg(self.joystick, self.my_image, egg_image_list)
+        egg = Egg(self.joystick, self.my_image, egg_image_list, self.image_loader)
         egg_success = egg.start()
 
         if not egg_success:

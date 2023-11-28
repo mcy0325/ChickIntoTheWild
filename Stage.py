@@ -93,6 +93,7 @@ def stage_process(my_image, joystick, image_loader, lives, character_image1, cha
         #루프 종료 조건3
         if time.time() - start_time > stage_duration and len(items) > 5:
             return False, score, lives
+        
 
 def collide(pos1, pos2):
     x1, y1 = pos1
@@ -101,3 +102,4 @@ def collide(pos1, pos2):
     distance = ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5  # 두 위치 사이의 거리를 계산합니다.
 
     return distance < 16  # 거리가 10 이하면 충돌했다고 판단합니다.
+
