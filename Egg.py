@@ -19,7 +19,7 @@ class Egg:
     def check_button(self, start_time):
         a_pressed = False
         while True:
-            if time.time() - start_time > 30:  # 여기 숫자 수정해야함
+            if time.time() - start_time > 20:  # 여기 숫자 수정해야함 15로
                 return False
             if self.joystick.button_A.value == False:
                 a_pressed = True
@@ -30,7 +30,7 @@ class Egg:
                 if self.button_count % 5 == 0:
                     self.image_index += 1
                     self.update_image()
-                if self.button_count >= 1:  # 여기 숫자 수정해야함
+                if self.button_count >= 25:  # 여기 숫자 수정해야함 25로
                     return True
                 time.sleep(0.2)
 

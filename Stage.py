@@ -28,10 +28,6 @@ def stage_process(my_image, joystick, image_loader, lives, character_image1, cha
 
     # 게임 루프
     while True:
-        # 생명이 0개가 되었는지 확인 여기 수정해야돼
-        if time.time() - start_time > stage_duration:
-            return False, score, lives
-
         # 캐릭터의 움직임 업데이트
         command = joystick.get_commands()
         character.move(command)
@@ -82,12 +78,21 @@ def stage_process(my_image, joystick, image_loader, lives, character_image1, cha
                 if lives_images:
                     del lives_images[-1]
 
-        if time.time() - start_time > 10 and len(items) <= 5: #여기 시간 수정해야함
+        #루프 종료 조건1
+        if time.time() - start_time > stage_duration and len(items) <= 5: #여기 시간 수정해야함
             my_image.paste(image_loader.get_image(next_stage_image), (0,0))
             my_image.paste(image_loader.get_image(next_stage_character), (60,70), image_loader.get_image(next_stage_character))
             joystick.disp.image(my_image)
             time.sleep(3)
             return True, score, lives
+        
+        # 루프 종료 조건2
+        if lives == 0:
+            return False, score, lives
+        
+        #루프 종료 조건3
+        if time.time() - start_time > stage_duration and len(items) > 5:
+            return False, score, lives
 
 def collide(pos1, pos2):
     x1, y1 = pos1
