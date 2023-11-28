@@ -50,8 +50,6 @@ class ImageLoader:
         img_worm = Image.open('./images/worm.PNG', mode='r').convert('RGBA')
 
         #Open Character Move Images
-        img_bigSpecialMove1 = Image.open('./images/bigSpecialMove1.PNG', mode='r').convert('RGBA')
-        img_bigSpecialMove2 = Image.open('./images/bigSpecialMove2.PNG', mode='r').convert('RGBA')
         img_chickMove1 = Image.open('./images/chickMove1.PNG', mode='r').convert('RGBA')
         img_chickMove2 = Image.open('./images/chickMove2.PNG', mode='r').convert('RGBA')
         img_eggChickMove1 = Image.open('./images/eggChickMove1.PNG', mode='r').convert('RGBA')
@@ -96,8 +94,6 @@ class ImageLoader:
             "cloud": img_cloud,
             "sharp": img_sharp,
             "worm": img_worm,
-            "bigSpecialMove1": img_bigSpecialMove1,
-            "bigSpecialMove2": img_bigSpecialMove2,
             "chickMove1": img_chickMove1,
             "chickMove2": img_chickMove2,
             "eggChickMove1": img_eggChickMove1,
