@@ -1,19 +1,28 @@
 import time
 from Egg import Egg
 from PIL import ImageDraw, ImageFont
-from Stage import stage_process
+from Stage import Stage
 
 class Game:
     def __init__(self, joystick, image_loader):
         self.joystick = joystick
         self.image_loader = image_loader
         self.stage = 0
-        self.spring_score = 0
-        self.summer_score = 0
-        self.fall_score = 0
-        self.winter_score = 0
+        self.scores = {
+            'spring': 0,
+            'summer': 0,
+            'fall': 0,
+            'winter': 0,
+        }
         self.total_score = 0
         self.lives = 3   
+        self.invincible = False
+        self.invincible_time = 10
+        self.invincible_uses = {
+            'fall': 1,
+            'winter': 1,
+        }
+
 
     def start(self, my_image):
         self.my_image = my_image
@@ -32,39 +41,22 @@ class Game:
                 self.winter_stage()
             else:
                 break
-    
-    def game_over(self):
-        self.my_image.paste(self.image_loader.get_image("gameOver"), (0,0), self.image_loader.get_image("gameOver"))
-        self.joystick.disp.image(self.my_image)
 
-        while True:
-            if self.joystick.button_B.value == False:
-                self.stage = 0
-                self.lives = 3
-                self.spring_score = 0
-                self.summer_score = 0
-                self.fall_score = 0
-                self.winter_score = 0
-                self.total_score = 0
-                self.start(self.my_image)
-                break
-    
-    def game_end(self):
-        self.my_image.paste(self.image_loader.get_image("gameEnd"), (0,0), self.image_loader.get_image("gameEnd"))
-        self.joystick.disp.image(self.my_image)
+    def run_stage(self, character_images, item_image, item_count, obstacle_image, obstacle_count, background_image, grown_image, stage_name, score_multiplier, invincible_images):
+        game_stage = Stage(
+            self.my_image, self.joystick, self.image_loader, self.lives,
+            character_images[0], character_images[1], 
+            item_image, item_count, 
+            obstacle_image, obstacle_count, 
+            background_image, grown_image, 
+            stage_name, score_multiplier,
+            invincible_images[0], invincible_images[1]
+        )
+        result, score, lives = game_stage.run()
+        if not result:
+            self.game_over_or_end("gameOver")
+        return score, lives
 
-        while True:
-            if self.joystick.button_B.value == False:
-                self.stage = 0
-                self.lives = 3
-                self.spring_score = 0
-                self.summer_score = 0
-                self.fall_score = 0
-                self.winter_score = 0
-                self.total_score = 0
-                self.start(self.my_image)
-                break
-    
     def start_stage(self):
         start_image_list = [self.image_loader.get_image("gameStart"), self.image_loader.get_image("gameStory1"), self.image_loader.get_image("gameStory2")]
         image_index = 0
@@ -89,8 +81,7 @@ class Game:
         egg_success = egg.start()
 
         if not egg_success:
-            self.game_over()
-        
+            self.game_over_or_end("gameOver")
         else:
             self.my_image.paste(self.image_loader.get_image("growUp"), (0,0), self.image_loader.get_image("growUp"))
             self.my_image.paste(self.image_loader.get_image("eggChick"), (60,70), self.image_loader.get_image("eggChick"))
@@ -99,59 +90,52 @@ class Game:
             self.stage += 1
 
     def spring_stage(self):
-        result, score, lives = stage_process(self.my_image, self.joystick, self.image_loader, self.lives, "eggChickMove1", "eggChickMove2", "bud", 4, "butterfly", 40, "growUp", "chick", "spring", 10)
-        if not result:
-            self.game_over()
-        else:
-            self.spring_score = score
-            self.total_score += self.spring_score
-            self.lives = lives
-            print(self.spring_score)
-            print(self.total_score)
-            self.stage += 1
-    
+        self.scores['spring'], self.lives = self.run_stage(["eggChickMove1", "eggChickMove2"], "bud", 4, "butterfly", 40, "growUp", "chick", "spring", 10, ["specialMove1", "specialMove2"])
+        self.total_score += self.scores['spring']
+        self.stage += 1
+
     def summer_stage(self):
-        result, score, lives = stage_process(self.my_image, self.joystick, self.image_loader, self.lives, "chickMove1", "chickMove2", "waterDrop", 6, "cloud", 40, "growUp", "rooster", "summer", 20)
-        if not result:
-            self.game_over()
-        else:
-            self.summer_score = score
-            self.total_score += self.summer_score
-            self.lives = lives
-            print(self.summer_score)
-            print(self.total_score)
-            self.stage += 1
+        self.scores['summer'], self.lives = self.run_stage(["chickMove1", "chickMove2"], "waterDrop", 5, "cloud", 40, "growUp", "rooster", "summer", 20)
+        self.total_score += self.scores['summer']
+        self.stage += 1
 
     def fall_stage(self):
-        result, score, lives = stage_process(self.my_image, self.joystick, self.image_loader, self.lives, "roosterMove1", "roosterMove2", "cherry", 8, "worm", 30, "growUp", "goodRooster", "fall", 30)
-        if not result:
-            self.game_over()
-        else:
-            self.fall_score = score
-            self.total_score += self.fall_score
-            self.lives = lives
-            print(self.fall_score)
-            print(self.total_score)
-            self.stage += 1
+        self.scores['fall'], self.lives = self.run_stage(["roosterMove1", "roosterMove2"], "cherry", 6, "worm", 30, "growUp", "goodRooster", "fall", 30)
+        self.total_score += self.scores['fall']
+        self.stage += 1
 
     def winter_stage(self):
-        result, score, lives = stage_process(self.my_image, self.joystick, self.image_loader, self.lives, "goodRoosterMove1", "goodRoosterMove2", "ice", 10, "sharp", 30, "growUp", "greatRooster", "winter", 40)
-        if not result:
-            self.game_over()
-        else:
-            self.winter_score = score
-            self.total_score += self.winter_score
-            self.lives = lives
-            print(self.winter_score)
-            print(self.total_score)
-            self.my_image.paste(self.image_loader.get_image("totalScore"), (0,0), self.image_loader.get_image("totalScore"))
-            fnt = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 20)
-            my_draw = ImageDraw.Draw(self.my_image)
-            my_draw.text((105, 60), str(self.spring_score), font=fnt, fill=(0, 0, 0))
-            my_draw.text((121, 95), str(self.summer_score), font=fnt, fill=(0, 0, 0))
-            my_draw.text((80, 127), str(self.fall_score), font=fnt, fill=(0, 0, 0))
-            my_draw.text((105, 162), str(self.winter_score), font=fnt, fill=(0, 0, 0))
-            my_draw.text((98, 202), str(self.total_score), font=fnt, fill=(0, 0, 0))
-            self.joystick.disp.image(self.my_image)
-            time.sleep(5)
-            self.game_end()
+        self.scores['winter'], self.lives = self.run_stage(["goodRoosterMove1", "goodRoosterMove2"], "ice", 7, "sharp", 30, "growUp", "greatRooster", "winter", 40)
+        self.total_score += self.scores['winter']
+        self.my_image.paste(self.image_loader.get_image("totalScore"), (0,0), self.image_loader.get_image("totalScore"))
+        fnt = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 20)
+        my_draw = ImageDraw.Draw(self.my_image)
+        my_draw.text((105, 60), str(self.scores['spring']), font=fnt, fill=(0, 0, 0))
+        my_draw.text((121, 95), str(self.scores['summer']), font=fnt, fill=(0, 0, 0))
+        my_draw.text((80, 127), str(self.scores['fall']), font=fnt, fill=(0, 0, 0))
+        my_draw.text((105, 162), str(self.scores['winter']), font=fnt, fill=(0, 0, 0))
+        my_draw.text((98, 202), str(self.total_score), font=fnt, fill=(0, 0, 0))
+        self.joystick.disp.image(self.my_image)
+        time.sleep(5)
+        self.game_over_or_end("gameEnd")
+
+    def game_over_or_end(self, image_name):
+        self.my_image.paste(self.image_loader.get_image(image_name), (0,0), self.image_loader.get_image(image_name))
+        self.joystick.disp.image(self.my_image)
+
+        while True:
+            if self.joystick.button_B.value == False:
+                self.reset_game()
+                break
+
+    def reset_game(self):
+        self.stage = 0
+        self.lives = 3
+        self.scores = {
+            'spring': 0,
+            'summer': 0,
+            'fall': 0,
+            'winter': 0,
+        }
+        self.total_score = 0
+        self.start(self.my_image)
