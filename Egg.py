@@ -36,7 +36,7 @@ class Egg:
             # 이미지를 화면에 출력
             self.joystick.disp.image(self.myImage)
 
-            if remaining_time <= 0:  # 여기 숫자 수정해야함 15로
+            if remaining_time <= 0: 
                 return False
             if self.joystick.button_A.value == False:
                 a_pressed = True
@@ -47,7 +47,7 @@ class Egg:
                 if self.button_count % 5 == 0:
                     self.image_index += 1
                     self.update_image()
-                if self.button_count >= 25:  # 여기 숫자 수정해야함 25로
+                if self.button_count >= 1:  # 여기 숫자 수정해야함 25로
                     return True
                 time.sleep(0.2)
 

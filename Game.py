@@ -8,21 +8,14 @@ class Game:
         self.joystick = joystick
         self.image_loader = image_loader
         self.stage = 0
+        self.lives = 3
+        self.total_score = 0
         self.scores = {
             'spring': 0,
             'summer': 0,
             'fall': 0,
             'winter': 0,
         }
-        self.total_score = 0
-        self.lives = 3   
-        self.invincible = False
-        self.invincible_time = 10
-        self.invincible_uses = {
-            'fall': 1,
-            'winter': 1,
-        }
-
 
     def start(self, my_image):
         self.my_image = my_image
@@ -42,7 +35,7 @@ class Game:
             else:
                 break
 
-    def run_stage(self, character_images, item_image, item_count, obstacle_image, obstacle_count, background_image, grown_image, stage_name, score_multiplier, invincible_images):
+    def run_stage(self, character_images, item_image, item_count, obstacle_image, obstacle_count, background_image, grown_image, stage_name, score_multiplier):
         game_stage = Stage(
             self.my_image, self.joystick, self.image_loader, self.lives,
             character_images[0], character_images[1], 
@@ -50,7 +43,6 @@ class Game:
             obstacle_image, obstacle_count, 
             background_image, grown_image, 
             stage_name, score_multiplier,
-            invincible_images[0], invincible_images[1]
         )
         result, score, lives = game_stage.run()
         if not result:
@@ -90,22 +82,22 @@ class Game:
             self.stage += 1
 
     def spring_stage(self):
-        self.scores['spring'], self.lives = self.run_stage(["eggChickMove1", "eggChickMove2"], "bud", 4, "butterfly", 40, "growUp", "chick", "spring", 10, ["specialMove1", "specialMove2"])
+        self.scores['spring'], self.lives = self.run_stage(["eggChickMove1", "eggChickMove2"], "bud", 3, "butterfly", 40, "growUp", "chick", "spring", 10)
         self.total_score += self.scores['spring']
         self.stage += 1
 
     def summer_stage(self):
-        self.scores['summer'], self.lives = self.run_stage(["chickMove1", "chickMove2"], "waterDrop", 5, "cloud", 40, "growUp", "rooster", "summer", 20)
+        self.scores['summer'], self.lives = self.run_stage(["chickMove1", "chickMove2"], "waterDrop", 4, "cloud", 40, "growUp", "rooster", "summer", 20)
         self.total_score += self.scores['summer']
         self.stage += 1
 
     def fall_stage(self):
-        self.scores['fall'], self.lives = self.run_stage(["roosterMove1", "roosterMove2"], "cherry", 6, "worm", 30, "growUp", "goodRooster", "fall", 30)
+        self.scores['fall'], self.lives = self.run_stage(["roosterMove1", "roosterMove2"], "cherry", 5, "worm", 30, "growUp", "goodRooster", "fall", 30)
         self.total_score += self.scores['fall']
         self.stage += 1
 
     def winter_stage(self):
-        self.scores['winter'], self.lives = self.run_stage(["goodRoosterMove1", "goodRoosterMove2"], "ice", 7, "sharp", 30, "growUp", "greatRooster", "winter", 40)
+        self.scores['winter'], self.lives = self.run_stage(["goodRoosterMove1", "goodRoosterMove2"], "ice", 6, "sharp", 30, "growUp", "greatRooster", "winter", 40)
         self.total_score += self.scores['winter']
         self.my_image.paste(self.image_loader.get_image("totalScore"), (0,0), self.image_loader.get_image("totalScore"))
         fnt = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 20)

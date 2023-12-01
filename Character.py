@@ -2,20 +2,24 @@ import time
 from PIL import ImageOps
 
 class Character:
-    def __init__(self, width, height, image1, image2, my_image, joystick, image_loader, special1, special2):
+    def __init__(self, width, height, image1, image2, my_image, joystick, image_loader):
         self.state = None
         self.images = [image1, image2]
         self.current_image = self.images[0]
+        self.special = False
+        self.special_start_time = None
+        self.special_duration = 5
+        self.special_count = 2
+        self.special_images = [image_loader.get_image("specialMove1"), image_loader.get_image("specialMove2")]
         self.my_image = my_image
         self.joystick = joystick
         self.image_loader = image_loader
-        self.invincible_images = [special1, special2]
         image_width, image_height = self.current_image.size
         self.position = [width / 2 - image_width / 2, height / 2 - image_height / 2, width / 2 + image_width / 2, height / 2 + image_height / 2]
         self.last_updated = time.time()
         self.flip = False
 
-    def move(self, command=None, invincible=True):
+    def move(self, command=None):
         if command['up_pressed'] or command['down_pressed'] or command['left_pressed'] or command['right_pressed']:
             if command['up_pressed']:
                 self.position[1] = max(0, self.position[1] - 5)
@@ -32,22 +36,23 @@ class Character:
                 self.position[2] = min(self.my_image.size[0], self.position[2] + 5)
                 self.flip = False
 
+            if self.special:
+                if time.time() - self.special_start_time > self.special_duration:
+                    self.special = False
+                else:
+                    if time.time() - self.last_updated > 0.1:
+                        if self.current_image == self.special_images[0]:
+                            self.current_image = self.special_images[1]
+                        else:
+                            self.current_image = self.special_images[0]
+                        self.last_updated = time.time()
+
             if time.time() - self.last_updated > 0.1:  # 0.1초마다 이미지를 전환합니다.
                 if self.current_image == self.images[0]:
                     self.current_image = self.images[1]
                 else:
                     self.current_image = self.images[0]
                 self.last_updated = time.time()
-            
-            if invincible:
-                self.current_image = self.invincible_images[0]
-            else:
-                if time.time() - self.last_updated > 0.1:  # 0.1초마다 이미지를 전환합니다.
-                    if self.current_image == self.invincible_images[0]:
-                        self.current_image = self.invincible_images[1]
-                    else:
-                        self.current_image = self.invincible_images[0]
-                    self.last_updated = time.time()
 
 
     def display(self):

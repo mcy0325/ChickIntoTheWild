@@ -6,7 +6,7 @@ import time
 import random
 
 class Stage:
-    def __init__(self, my_image, joystick, image_loader, lives, character_image1, character_image2, item_image_name, enemy_num, enemy_name, stage_duration, next_stage_image, next_stage_character, background_image_name, score_increment, invincible_image1, invincible_image2):
+    def __init__(self, my_image, joystick, image_loader, lives, character_image1, character_image2, item_image_name, enemy_num, enemy_name, stage_duration, next_stage_image, next_stage_character, background_image_name, score_increment):
         self.my_image = my_image
         self.joystick = joystick
         self.image_loader = image_loader
@@ -19,8 +19,6 @@ class Stage:
         self.next_stage_images = (next_stage_image, next_stage_character)
         self.background_image_name = background_image_name
         self.score_increment = score_increment
-        self.invincible_images = (invincible_image1, invincible_image2)
-        self.invincible = False
         self.my_image = None
         self.character = None
         self.items = None
@@ -31,7 +29,7 @@ class Stage:
         self.score = 0
 
     def create_characters(self):
-        self.character = Character(240, 240, self.image_loader.get_image(self.character_images[0]), self.image_loader.get_image(self.character_images[1]), self.my_image, self.joystick, self.image_loader, self.image_loader.get_image(self.invincible_images[0], self.image_loader.get_image(self.invincible_images[1])))
+        self.character = Character(240, 240, self.image_loader.get_image(self.character_images[0]), self.image_loader.get_image(self.character_images[1]), self.my_image, self.joystick, self.image_loader)
 
     def create_items(self):
         item_image = self.image_loader.get_image(self.item_image_name)
@@ -62,15 +60,19 @@ class Stage:
         self.lives_images = [self.image_loader.get_image("heart") for _ in range(self.lives)]
         self.start_time = time.time()
         self.fnt = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 20)
+        last_A_press_time = 0
         while True:
-            self.character.move(self.joystick.get_commands(), self.invincible)
+            self.character.move(self.joystick.get_commands())
             self.character.display()
             self.draw_screen()
             self.check_collision()
-            if self.joystick.button_A.value == False:
-                self.invincible = True
-                time.sleep(5)
-                self.invincible = False
+            if self.joystick.button_A.value == False and self.character.special_count > 0:
+                current_time = time.time()  # 현재 시간을 구합니다.
+                if current_time - last_A_press_time > 0.2:  # 마지막으로 A 버튼이 눌린 후 0.2초가 지났는지 확인합니다.
+                    self.character.special = True
+                    self.character.special_start_time = current_time
+                    self.character.special_count -= 1
+                    last_A_press_time = current_time  # A 버튼이 눌린 시간을 업데이트합니다.
             if time.time() - self.start_time > self.stage_duration and len(self.items) <= 5:
                 self.my_image.paste(self.image_loader.get_image(self.next_stage_images[0]), (0,0))
                 self.my_image.paste(self.image_loader.get_image(self.next_stage_images[1]), (60,70), self.image_loader.get_image(self.next_stage_images[1]))
@@ -95,9 +97,8 @@ class Stage:
                 if len(self.items) <= 5:
                     self.score += self.score_increment
         for enemy in self.enemies[:]:
-            if self.collide(self.character.get_position(), enemy.get_position()):
+            if self.character.special == False and self.collide(self.character.get_position(), enemy.get_position()):
                 self.enemies.remove(enemy)
-                if not self.invincible:
-                    self.lives -= 1
-                    if self.lives_images:
-                        del self.lives_images[-1]
+                self.lives -= 1
+                if self.lives_images:
+                    del self.lives_images[-1]
