@@ -5,7 +5,7 @@ class ImageLoader:
         self.images = self.load_images()
 
     def load_images(self):
-        #Open Background Images
+        #배경 이미지
         img_eggBreak = Image.open('./images/eggBreak.PNG', mode='r').convert('RGBA')
         img_fall = Image.open('./images/fall.PNG', mode='r').convert('RGBA')
         img_gameEnd = Image.open('./images/gameEnd.PNG', mode='r').convert('RGBA')
@@ -19,17 +19,17 @@ class ImageLoader:
         img_winter = Image.open('./images/winter.PNG', mode='r').convert('RGBA')
         img_totalScore = Image.open('./images/totalScore.PNG', mode='r').convert('RGBA')
 
-        #Open Character Images
+        #캐릭터 이미지
         img_chick = Image.open('./images/chick.PNG', mode='r').convert('RGBA')
         img_eggChick = Image.open('./images/eggChick.PNG', mode='r').convert('RGBA')
         img_goodRooster = Image.open('./images/goodRooster.PNG', mode='r').convert('RGBA')
         img_greatRooster = Image.open('./images/greatRooster.PNG', mode='r').convert('RGBA')
         img_rooster = Image.open('./images/rooster.PNG', mode='r').convert('RGBA')
         
-        #Open Character Heart Image
+        #캐릭터 생명 이미지
         img_heart = Image.open('./images/heart.PNG', mode='r').convert('RGBA')
 
-        #Open Egg Images
+        #알 깨기 단계 이미지
         img_egg1 = Image.open('./images/egg1.PNG', mode='r').convert('RGBA')
         img_egg2 = Image.open('./images/egg2.PNG', mode='r').convert('RGBA')
         img_egg3 = Image.open('./images/egg3.PNG', mode='r').convert('RGBA')
@@ -37,19 +37,19 @@ class ImageLoader:
         img_egg5 = Image.open('./images/egg5.PNG', mode='r').convert('RGBA')
         img_egg6 = Image.open('./images/egg6.PNG', mode='r').convert('RGBA')
 
-        #Open Item Images
+        #아이템 이미지
         img_bud = Image.open('./images/bud.PNG', mode='r').convert('RGBA')
         img_cherry = Image.open('./images/cherry.PNG', mode='r').convert('RGBA')
         img_ice = Image.open('./images/ice.PNG', mode='r').convert('RGBA')
         img_waterDrop = Image.open('./images/waterDrop.PNG', mode='r').convert('RGBA')
 
-        #Open Enemy Images
+        #적 이미지
         img_butterfly = Image.open('./images/butterfly.PNG', mode='r').convert('RGBA')
         img_cloud = Image.open('./images/cloud.PNG', mode='r').convert('RGBA')
         img_sharp = Image.open('./images/sharp.PNG', mode='r').convert('RGBA')
         img_worm = Image.open('./images/worm.PNG', mode='r').convert('RGBA')
 
-        #Open Character Move Images
+        #캐릭터 움직임 이미지
         img_chickMove1 = Image.open('./images/chickMove1.PNG', mode='r').convert('RGBA')
         img_chickMove2 = Image.open('./images/chickMove2.PNG', mode='r').convert('RGBA')
         img_eggChickMove1 = Image.open('./images/eggChickMove1.PNG', mode='r').convert('RGBA')

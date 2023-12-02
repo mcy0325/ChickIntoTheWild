@@ -16,9 +16,11 @@ class Character:
         self.image_loader = image_loader
         image_width, image_height = self.current_image.size
         self.position = [width / 2 - image_width / 2, height / 2 - image_height / 2, width / 2 + image_width / 2, height / 2 + image_height / 2]
+        self.radius = 16
         self.last_updated = time.time()
-        self.flip = False
+        self.flip = False #이미지 좌우 반전 여부
 
+    #캐릭터 움직임 처리 함수
     def move(self, command=None):
         if command['up_pressed'] or command['down_pressed'] or command['left_pressed'] or command['right_pressed']:
             if command['up_pressed']:
@@ -47,17 +49,18 @@ class Character:
                             self.current_image = self.special_images[0]
                         self.last_updated = time.time()
 
-            if time.time() - self.last_updated > 0.1:  # 0.1초마다 이미지를 전환합니다.
+            if time.time() - self.last_updated > 0.1: 
                 if self.current_image == self.images[0]:
                     self.current_image = self.images[1]
                 else:
                     self.current_image = self.images[0]
                 self.last_updated = time.time()
 
-
+    #캐릭터 화면에 표시하는 함수
     def display(self):
         position = [int(p) for p in self.position]
 
+        #이미지 좌우 반전
         if self.flip:
             current_image = ImageOps.mirror(self.current_image)
         else:
@@ -68,7 +71,7 @@ class Character:
         self.my_image.paste(current_image, tuple(position), current_image)
         self.joystick.disp.image(self.my_image)
 
-    
+    #캐릭터의 중심 위치 반환 함수
     def get_position(self):
         x1, y1, x2, y2 = self.position
         center_x = (x1 + x2) / 2
