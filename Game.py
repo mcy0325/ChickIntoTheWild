@@ -7,9 +7,10 @@ class Game:
     def __init__(self, joystick, image_loader):
         self.joystick = joystick
         self.image_loader = image_loader
-        self.stage = 0
-        self.lives = 3
-        self.total_score = 0
+        self.stage = 0 #현재 스테이지
+        self.lives = 3 #생명 수
+        self.total_score = 0 #총 점수
+        #각 스테이지별 점수
         self.scores = {
             'spring': 0,
             'summer': 0,
@@ -17,6 +18,7 @@ class Game:
             'winter': 0,
         }
 
+    #게임 시작 함수
     def start(self, my_image):
         self.my_image = my_image
         while True:
@@ -35,6 +37,7 @@ class Game:
             else:
                 break
 
+    #특정 계절 단계를 실행하고 그 결과를 반환하는 함수
     def run_stage(self, character_images, item_image, item_count, obstacle_image, obstacle_count, background_image, grown_image, stage_name, score_multiplier):
         game_stage = Stage(
             self.my_image, self.joystick, self.image_loader, self.lives,
@@ -49,6 +52,7 @@ class Game:
             self.game_over_or_end("gameOver")
         return score, lives
 
+    #게임 시작 화면
     def start_stage(self):
         start_image_list = [self.image_loader.get_image("gameStart"), self.image_loader.get_image("gameStory1"), self.image_loader.get_image("gameStory2")]
         image_index = 0
@@ -63,6 +67,7 @@ class Game:
 
         self.stage += 1
 
+    #알 깨기 단계 실행 함수
     def egg_break_stage(self):
         self.my_image.paste(self.image_loader.get_image("eggBreak"), (0,0), self.image_loader.get_image("eggBreak"))
         self.my_image.paste(self.image_loader.get_image("egg1"), (60,50), self.image_loader.get_image("egg1"))
@@ -81,23 +86,27 @@ class Game:
             time.sleep(3)
             self.stage += 1
 
+    #봄 단계 실행 함수
     def spring_stage(self):
-        self.scores['spring'], self.lives = self.run_stage(["eggChickMove1", "eggChickMove2"], "bud", 3, "butterfly", 40, "growUp", "chick", "spring", 10)
+        self.scores['spring'], self.lives = self.run_stage(["eggChickMove1", "eggChickMove2"], "bud", 3, "butterfly", 30, "growUp", "chick", "spring", 10)
         self.total_score += self.scores['spring']
         self.stage += 1
 
+    #여름 단계 실행 함수
     def summer_stage(self):
-        self.scores['summer'], self.lives = self.run_stage(["chickMove1", "chickMove2"], "waterDrop", 4, "cloud", 40, "growUp", "rooster", "summer", 20)
+        self.scores['summer'], self.lives = self.run_stage(["chickMove1", "chickMove2"], "waterDrop", 4, "cloud", 30, "growUp", "rooster", "summer", 20)
         self.total_score += self.scores['summer']
         self.stage += 1
 
+    #가을 단계 실행 함수
     def fall_stage(self):
-        self.scores['fall'], self.lives = self.run_stage(["roosterMove1", "roosterMove2"], "cherry", 5, "worm", 30, "growUp", "goodRooster", "fall", 30)
+        self.scores['fall'], self.lives = self.run_stage(["roosterMove1", "roosterMove2"], "cherry", 4, "worm", 20, "growUp", "goodRooster", "fall", 30)
         self.total_score += self.scores['fall']
         self.stage += 1
 
+    #겨울 단계 실행 함수
     def winter_stage(self):
-        self.scores['winter'], self.lives = self.run_stage(["goodRoosterMove1", "goodRoosterMove2"], "ice", 6, "sharp", 30, "growUp", "greatRooster", "winter", 40)
+        self.scores['winter'], self.lives = self.run_stage(["goodRoosterMove1", "goodRoosterMove2"], "ice", 5, "sharp", 30, "growUp", "greatRooster", "winter", 40)
         self.total_score += self.scores['winter']
         self.my_image.paste(self.image_loader.get_image("totalScore"), (0,0), self.image_loader.get_image("totalScore"))
         fnt = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 20)
@@ -111,6 +120,7 @@ class Game:
         time.sleep(5)
         self.game_over_or_end("gameEnd")
 
+    #게임 오버 또는 게임 종료 화면
     def game_over_or_end(self, image_name):
         self.my_image.paste(self.image_loader.get_image(image_name), (0,0), self.image_loader.get_image(image_name))
         self.joystick.disp.image(self.my_image)
@@ -120,6 +130,7 @@ class Game:
                 self.reset_game()
                 break
 
+    #게임 초기화 함수
     def reset_game(self):
         self.stage = 0
         self.lives = 3
