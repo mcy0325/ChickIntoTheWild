@@ -38,7 +38,7 @@ class Stage:
         self.items = [Item(self.my_image, self.joystick.width, self.joystick.height, item_image) for _ in range(10)]
     
     def create_enemies(self):
-        self.enemies = [Enemy(random.randint(20, 190), random.randint(20, 190), self.enemy_num, self.enemy_name, self.image_loader) for _ in range(self.enemy_num)]
+        self.enemies = [Enemy(random.randint(20, 90), random.randint(20, 90), self.enemy_num, self.enemy_name, self.image_loader) for _ in range(self.enemy_num)]
     
     #화면에 표시하는 함수
     def draw_screen(self):
@@ -96,7 +96,7 @@ class Stage:
         #두 위치 사이의 거리 계산
         distance = ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5 
         #두 반경의 합보다 거리가 작으면 충돌
-        return distance < (radius1 + radius2) 
+        return distance < (radius1 + radius2 - 5) 
 
     #충돌 체크 및 제거 함수
     def check_collision(self):
