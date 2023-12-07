@@ -96,7 +96,7 @@ class Stage:
         #두 위치 사이의 거리 계산
         distance = ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5 
         #두 반경의 합보다 거리가 작으면 충돌
-        return distance < (radius1 + radius2 - 5) 
+        return distance < (radius1 + radius2 - 3) 
 
     #충돌 체크 및 제거 함수
     def check_collision(self):

@@ -106,7 +106,7 @@ class Game:
 
     #겨울 단계 실행 함수
     def winter_stage(self):
-        self.scores['winter'], self.lives = self.run_stage(["goodRoosterMove1", "goodRoosterMove2"], "ice", 5, "sharp", 30, "growUp", "greatRooster", "winter", 40)
+        self.scores['winter'], self.lives = self.run_stage(["goodRoosterMove1", "goodRoosterMove2"], "ice", 5, "sharp", 20, "growUp", "greatRooster", "winter", 40)
         self.total_score += self.scores['winter']
         self.my_image.paste(self.image_loader.get_image("totalScore"), (0,0), self.image_loader.get_image("totalScore"))
         fnt = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 20)
