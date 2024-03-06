@@ -24,5 +24,5 @@
 - Visual Studio Code
 - Python
 
-## Youtube
+## Youtube 📺
 <https://youtu.be/ThB56eqWtT0?si=bnZkMrwvHA0fb80g>
