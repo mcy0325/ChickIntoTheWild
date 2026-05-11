@@ -23,6 +23,3 @@
 - 라즈베리파이
 - Visual Studio Code
 - Python
-
-## Youtube 📺
-<https://youtu.be/ThB56eqWtT0?si=bnZkMrwvHA0fb80g>
